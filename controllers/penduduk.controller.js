@@ -83,13 +83,13 @@ module.exports = {
 
         function update() {
             if (old_dt) {
-                let sql = "UPDATE data SET ? WHERE id = ?";
+                let sql = "UPDATE data_penduduk SET ? WHERE id = ?";
                 db.query(sql, [new_dt, id], (err, result) => {
                     if (err) {
                         throw err;
                     } else {
                         res.json({
-                            message: `Sukses update dengan id = ${id}`,
+                            message: `Update sukses dengan id = ${id}`,
                             old_data: old_dt[0],
                             new_data: new_dt
                         })
