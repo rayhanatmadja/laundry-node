@@ -1,40 +1,38 @@
 'use strict'
 
-const req = require("express/lib/request")
-const res = require("express/lib/response")
-const db = require("../db")
+const db = require('../db')
 
 module.exports = {
     index: (req, res) => {
-        const sql = "SELECT * FROM data_penduduk"
+        let sql = "select * from data_penduduk"
         db.query(sql, (err, result) => {
-            if(err) throw (err)
+            if (err) throw (err)
             res.json({
-                message : "Berhasil",
-                data : result
+                message: "Success",
+                data: result
             })
         })
     },
-    tambah: (req, res) => {
+    add: (req, res) => {
         let data = {
             nama: req.body.nama,
             alamat: req.body.alamat
         }
-        let sql = "INSERT INTO data_penduduk SET ?";
+        let sql = "insert into data_penduduk SET ?";
         if (data.alamat && data.nama) {
             db.query(sql, data, (err) => {
                 if (err) {
                     throw err
                 } else {
                     res.json({
-                        message: "Tambah sukses",
+                        message: "Added succes",
                         data
                     })
                 }
             })
         }
     },
-    hapus: (req, res) => {
+    delete: (req, res) => {
         let id = req.body.id;
         let data;
         if (id) {
@@ -54,48 +52,31 @@ module.exports = {
                     throw err
                 } else {
                     res.json({
-                        message: `ID dengan ${id} berhasil dihapus`,
+                        message: `ID ${id} deleted.`,
                         data: data[0]
                     })
                 }
             })
         }
     },
-    ubah: (req, res) => {
-        let id = req.body.id;
+    update: (req, res) => {
+        const id = req.body.id;
         let new_dt = {
             nama: req.body.nama,
             alamat: req.body.alamat
         }
-        let old_dt;
-
-        if (id) {
-            let sql = "SELECT nama,alamat FROM data_penduduk WHERE id = ?";
-            db.query(sql, [id], (err, result) => {
-                if (err) {
-                    throw err;
-                } else {
-                    old_dt = result;
+        db.query(`update data_penduduk set ? where id = '${id}'`, new_dt, (err, result) => {
+            let response = null;
+            if (err) {
+                response = {
+                    message: err.message
                 }
-            })
-        }
-        setTimeout(update, 1);
-
-        function update() {
-            if (old_dt) {
-                let sql = "UPDATE data_penduduk SET ? WHERE id = ?";
-                db.query(sql, [new_dt, id], (err, result) => {
-                    if (err) {
-                        throw err;
-                    } else {
-                        res.json({
-                            message: `Update sukses dengan id = ${id}`,
-                            old_data: old_dt[0],
-                            new_data: new_dt
-                        })
-                    }
+            } else {
+                res.send({
+                    message: "Berhasil update data",
+                    data: result
                 })
             }
-        }
+        })
     }
 }

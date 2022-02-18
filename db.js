@@ -1,14 +1,12 @@
 'use strict'
 
-const msyql = require('mysql');
-
-// koneksi
-const db = msyql.createConnection({
+const mysql = require("mysql");
+const db = mysql.createConnection({
     host: "localhost",
     user: "root",
     password: "",
     database: "penduduk",
-    multipleStatements: true
+    multipleStatements: true,
 })
 
 module.exports = db;
