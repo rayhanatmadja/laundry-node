@@ -1,8 +1,19 @@
 'use strict'
 
 const db = require('../db')
+<<<<<<< HEAD:paket/paket.controller.js
 var bcrypt = require('bcryptjs');
 const jsonwebtoken = require('jsonwebtoken');
+=======
+const bcrypt = require('bcrypt');
+const secret = '%&*%%$###%'
+const jsonwebtoken = require('jsonwebtoken');
+
+function hashPassword(password){
+    const salt = bcrypt.genSaltSync(10);
+    return bcrypt.hashSync(password, salt);
+}
+>>>>>>> 675f45e086e197f94294088db96ef31bff1d7688:controllers/penduduk.controller.js
 
 module.exports = {
     index: (req, res) => {
@@ -81,6 +92,7 @@ module.exports = {
             }
         })
     },
+<<<<<<< HEAD:paket/paket.controller.js
     // db.query("INSERT INTO akun SET ?", dataAkun, (err, result) => {
     //     if(err) throw err
     //     else{
@@ -100,4 +112,46 @@ module.exports = {
     //         }
     //     })
     // }
+=======
+
+    // LOGIN & REGISTRASI
+
+    registrasi: (req, res) => {
+        const {
+            nama,
+            email,
+            password
+        } = req.body
+        if(!nama, !email || !password) res.status(402).json({message : 'nama,email & password harus diisi'});
+        return db.query("INSERT INTO akun SET ?", {nama, email ,password:hashPassword(password)}, (err, result) => {
+            if(err) throw err
+            else{
+                return res.json({message : 'Registrasi berhasil', data:result});
+            }
+        })
+    },
+
+    login: (req, res) => {
+        const { email, password } = req.body;
+        if (!email || !password)
+        return res.status(402).json({ message: "Data tidak lengkap" });
+    
+        return db.query(
+            "select * from akun where email = ?",
+            email,
+        (err, result) => {
+            if (err) return res.status(500).json({ err });
+    
+            const user = result[0];
+            if (typeof user === "undefined")
+                return res.status(401).json({ message: "Email tidak terdaftar" });
+            if (!bcrypt.compareSync(password, user.password))
+                return res.status(401).json({ message: "Kredensial salah" });
+    
+            const token = jsonwebtoken.sign({ data: user }, secret);
+            return res.json({ message: "Berhasil login, akses token", token });
+            }
+        );
+    },
+>>>>>>> 675f45e086e197f94294088db96ef31bff1d7688:controllers/penduduk.controller.js
 }
