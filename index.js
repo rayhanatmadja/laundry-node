@@ -22,7 +22,10 @@ app.get("/", (req, res) => {
     })
 })
 
-app.use("/penduduk", require('./routes/penduduk.route'))
+const paketRouter = require('./paket/paket.route');
+const pelangganRouter = require('./pelanggan/pelanggan.route');
+app.use("/api/paket", paketRouter);
+app.use("/api/pelanggan", pelangganRouter);
 
-const port = 8000;
+const port = 8080;
 app.listen(port, () => console.log(`Port running on ${port}`))
